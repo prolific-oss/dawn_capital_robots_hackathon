@@ -10,5 +10,6 @@ Pass only if the framing, viewpoint and background stay the same across all fram
 Pass only if both are in frame, in focus, well lit and not blocked (e.g. by a hand) \
 in enough frames to follow the plug going into the socket.
 
-For each test return passed=true or false, with a short reason.
+For each test, first write a short reason based on what you observe in the frames, \
+then give the verdict passed=true or false that follows from that reason.
 """

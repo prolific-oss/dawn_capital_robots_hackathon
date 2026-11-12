@@ -30,12 +30,24 @@ def process(video, prompt):
 def main():
     target = Path(sys.argv[1] if len(sys.argv) > 1 else "videos")
     videos = [target] if target.is_file() else sorted(p for p in target.iterdir() if p.suffix.lower() in VIDEO_EXTS)
+    reports = []
     for video in videos:
         try:
             report = process(video, PROMPT)
             print(f"{'PASS' if report['passed'] else 'FAIL'}  {video}")
         except Exception as e:
+            report = {"video": str(video), "passed": False, "error": str(e)}
             print(f"ERROR {video}: {e}")
+        reports.append(report)
+
+    summary = {
+        "total": len(reports),
+        "passed": sum(r["passed"] for r in reports),
+        "failed": sum(not r["passed"] and "error" not in r for r in reports),
+        "errors": sum("error" in r for r in reports),
+    }
+    Path("output").mkdir(exist_ok=True)
+    (Path("output") / "report.json").write_text(json.dumps({"summary": summary, "videos": reports}, indent=2))
 
 
 if __name__ == "__main__":

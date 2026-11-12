@@ -13,8 +13,8 @@ REASONING_EFFORT = "low"
 
 
 class Check(BaseModel):
-    passed: bool
     reason: str
+    passed: bool
 
 
 class Verdict(BaseModel):
