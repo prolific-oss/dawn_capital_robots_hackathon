@@ -7,6 +7,7 @@ Each video goes through two stages:
 1. **Technical checks** (OpenCV)
    - `min_fps_30`: at least 30 fps (29.97 is accepted so NTSC footage passes).
    - `min_resolution_720p`: the shorter side is at least 720 px.
+   - `min_duration`: longer than 5 seconds, so at least two frames are sampled.
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
@@ -65,6 +66,7 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
   "tests": [
     {"test": "min_fps_30", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
+    {"test": "min_duration", "passed": true, "value": "12.0s"},
     {"test": "stable_camera", "passed": true, "reason": "..."},
     {"test": "plug_and_socket_visible", "passed": true, "reason": "..."}
   ]
