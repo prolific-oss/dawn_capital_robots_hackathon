@@ -46,4 +46,10 @@ def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONIN
         messages=[{"role": "user", "content": content}],
         response_format=Verdict,
     )
-    return response.choices[0].message.parsed.model_dump()
+    choice = response.choices[0]
+    if choice.message.refusal:
+        raise ValueError(f"Model refused to analyse the frames: {choice.message.refusal}")
+    if choice.message.parsed is None:
+        # e.g. finish_reason "length" when the output was cut off
+        raise ValueError(f"Model returned no verdict (finish_reason={choice.finish_reason})")
+    return choice.message.parsed.model_dump()
