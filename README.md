@@ -53,10 +53,12 @@ The console prints one line per video: `PASS`, `FAIL` or `ERROR`.
 
 ## Output
 
-For each video, `output/<video-name>/` contains:
+For each video, `output/<video-name>-<hash>/` contains (the hash is derived from the video's full path, so videos with the same name don't overwrite each other):
 
 - `frames/`: the sampled frames (`frame_000000.jpg`, `frame_000005.jpg`, ... named by source frame index).
 - `report.json`: the overall result and each check's result.
+
+Frames and `report.json` from a previous run are deleted when the video is processed again.
 
 A combined `output/report.json` covers every video in the run: a `summary` (total, passed, failed, errors) and a `videos` list holding each video's report (or an `error` message if processing crashed).
 

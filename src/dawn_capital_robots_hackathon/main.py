@@ -1,4 +1,6 @@
+import hashlib
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -10,9 +12,18 @@ from .prompt import PROMPT
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
 
 
+def output_dir(video):
+    # the stem alone collides for a.mp4 / a.mov and for x/clip.mp4 / y/clip.mp4
+    digest = hashlib.sha1(str(video.resolve()).encode()).hexdigest()[:8]
+    return Path("output") / f"{video.stem}-{digest}"
+
+
 def process(video, prompt):
-    out_dir = Path("output") / video.stem
+    out_dir = output_dir(video)
     out_dir.mkdir(parents=True, exist_ok=True)
+    # drop the previous run's results so a failed run can't leave a stale report or frames behind
+    (out_dir / "report.json").unlink(missing_ok=True)
+    shutil.rmtree(out_dir / "frames", ignore_errors=True)
 
     tests = check_video(video)
     if all(t["passed"] for t in tests):
