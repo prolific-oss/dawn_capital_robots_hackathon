@@ -17,9 +17,21 @@ class Check(BaseModel):
     passed: bool
 
 
+class PrivacyIssue(BaseModel):
+    t: float
+    description: str
+
+
+class PrivacyCheck(BaseModel):
+    reason: str
+    issues: list[PrivacyIssue]
+    passed: bool
+
+
 class Verdict(BaseModel):
     stable_camera: Check
     plug_and_socket_visible: Check
+    privacy_safe: PrivacyCheck
 
 
 def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONING_EFFORT):

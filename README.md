@@ -11,6 +11,7 @@ Each video goes through two stages:
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
+   - `privacy_safe`: no frame shows a face, readable personal text, a photo or screen of a person, or a distinctive tattoo, scar or birthmark. Each problem is listed under `issues` with its timestamp. Ordinary hands, arms, clothing and plain jewellery are allowed. The policy is in `prompt.py`; edit it there. Audio is not checked.
 
    Every 5th frame is sampled and sent to the model together. The model returns a pass/fail and a short reason for each check.
 
@@ -70,7 +71,8 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
     {"test": "max_resolution_2160p", "passed": true, "value": "1920x1080"},
     {"test": "min_frames", "passed": true, "value": 360},
     {"test": "stable_camera", "passed": true, "reason": "..."},
-    {"test": "plug_and_socket_visible", "passed": true, "reason": "..."}
+    {"test": "plug_and_socket_visible", "passed": true, "reason": "..."},
+    {"test": "privacy_safe", "passed": true, "reason": "...", "issues": []}
   ]
 }
 ```
