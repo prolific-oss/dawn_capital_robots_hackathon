@@ -7,12 +7,12 @@ Each video goes through two stages:
 1. **Technical checks** (OpenCV)
    - `min_fps_30`: at least 30 fps (29.97 is accepted so NTSC footage passes).
    - `min_resolution_720p`: the shorter side is at least 720 px.
-   - `min_duration`: longer than 5 seconds, so at least two frames are sampled.
+   - `min_frames`: enough frames to sample at least two (6 with the default step of 5).
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
 
-   Frames are sampled every 5 seconds and sent to the model together. The model returns a pass/fail and a short reason for each check.
+   Every 5th frame is sampled and sent to the model together. The model returns a pass/fail and a short reason for each check.
 
 If the technical checks fail, the visual checks are marked as failed ("skipped") and no API call is made. A video passes overall only if every check passes.
 
@@ -24,7 +24,7 @@ All code lives in the `dawn_capital_robots_hackathon` package under `src/`.
 |---|---|
 | `main.py` | CLI entry point. Runs the pipeline and writes the reports. |
 | `check_video.py` | FPS and resolution checks. |
-| `extract_frames.py` | Samples a JPEG frame every 5 seconds. |
+| `extract_frames.py` | Saves every 5th frame as a JPEG. |
 | `analyse_frames.py` | Sends frames to the vision model and parses the structured `Verdict`. |
 | `prompt.py` | The prompt that defines the visual checks. |
 
@@ -54,7 +54,7 @@ The console prints one line per video: `PASS`, `FAIL` or `ERROR`.
 
 For each video, `output/<video-name>/` contains:
 
-- `frames/`: the sampled frames (`frame_0000s.jpg`, `frame_0005s.jpg`, ...).
+- `frames/`: the sampled frames (`frame_000000.jpg`, `frame_000005.jpg`, ... named by source frame index).
 - `report.json`: the overall result and each check's result.
 
 A combined `output/report.json` covers every video in the run: a `summary` (total, passed, failed, errors) and a `videos` list holding each video's report (or an `error` message if processing crashed).
@@ -66,7 +66,7 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
   "tests": [
     {"test": "min_fps_30", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
-    {"test": "min_duration", "passed": true, "value": "12.0s"},
+    {"test": "min_frames", "passed": true, "value": 360},
     {"test": "stable_camera", "passed": true, "reason": "..."},
     {"test": "plug_and_socket_visible", "passed": true, "reason": "..."}
   ]
@@ -77,7 +77,7 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
 
 - **Model and reasoning effort**: set `MODEL` and `REASONING_EFFORT` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
 - **Prompt or criteria**: edit `src/dawn_capital_robots_hackathon/prompt.py`. If you add a check, add a matching field to `Verdict` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
-- **Sampling rate**: change `every_s` in `src/dawn_capital_robots_hackathon/extract_frames.py`.
+- **Sampling rate**: change `FRAME_STEP` (keep every Nth frame) in `src/dawn_capital_robots_hackathon/extract_frames.py`.
 - **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
 
 `videos/`, `output/` and `.env` are git-ignored.

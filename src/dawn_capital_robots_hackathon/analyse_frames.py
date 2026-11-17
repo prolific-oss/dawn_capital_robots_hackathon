@@ -25,9 +25,8 @@ class Verdict(BaseModel):
 def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONING_EFFORT):
     content = [{"type": "text", "text": prompt}]
     for frame in frames:
-        t = int(frame.stem.split("_")[1].rstrip("s"))
-        b64 = base64.b64encode(frame.read_bytes()).decode()
-        content.append({"type": "text", "text": f"Frame at t={t}s:"})
+        b64 = base64.b64encode(frame.path.read_bytes()).decode()
+        content.append({"type": "text", "text": f"Frame {frame.index} at t={frame.t:.2f}s:"})
         content.append({"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}})
     response = OpenAI().chat.completions.parse(
         model=model,

@@ -1,5 +1,7 @@
-PROMPT = """\
-You are given frames sampled every 5 seconds from a video of a plug being plugged into a socket. \
+from .extract_frames import FRAME_STEP
+
+PROMPT = f"""\
+You are given every {FRAME_STEP}th frame sampled from a video of a plug being plugged into a socket. \
 Review all frames together and evaluate two tests independently.
 
 1. stable_camera: The camera is not shaky and keeps a fixed angle for the whole video. \
