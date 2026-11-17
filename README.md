@@ -17,6 +17,8 @@ If the technical checks fail, the visual checks are marked as failed ("skipped")
 
 ## Layout
 
+All code lives in the `dawn_capital_robots_hackathon` package under `src/`.
+
 | File | Purpose |
 |---|---|
 | `main.py` | CLI entry point. Runs the pipeline and writes the reports. |
@@ -38,11 +40,11 @@ echo "OPENAI_API_KEY=sk-..." > .env
 
 ```sh
 # Process every video in ./videos (.mp4, .mov, .avi, .mkv, .webm)
-uv run main.py
+uv run check-videos
 
 # Process a single file or another directory
-uv run main.py path/to/video.mov
-uv run main.py path/to/dir
+uv run check-videos path/to/video.mov
+uv run check-videos path/to/dir
 ```
 
 The console prints one line per video: `PASS`, `FAIL` or `ERROR`.
@@ -71,9 +73,9 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
 
 ## Customising
 
-- **Model and reasoning effort**: set `MODEL` and `REASONING_EFFORT` in `analyse_frames.py`.
-- **Prompt or criteria**: edit `prompt.py`. If you add a check, add a matching field to `Verdict` in `analyse_frames.py`.
-- **Sampling rate**: change `every_s` in `extract_frames.py`.
-- **Thresholds**: change the FPS and resolution limits in `check_video.py`.
+- **Model and reasoning effort**: set `MODEL` and `REASONING_EFFORT` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
+- **Prompt or criteria**: edit `src/dawn_capital_robots_hackathon/prompt.py`. If you add a check, add a matching field to `Verdict` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
+- **Sampling rate**: change `every_s` in `src/dawn_capital_robots_hackathon/extract_frames.py`.
+- **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
 
 `videos/`, `output/` and `.env` are git-ignored.

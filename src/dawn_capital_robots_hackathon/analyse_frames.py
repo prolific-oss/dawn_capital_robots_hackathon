@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel
 
-from prompt import PROMPT
+from .prompt import PROMPT
 
 load_dotenv()
 

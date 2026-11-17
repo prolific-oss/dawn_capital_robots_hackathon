@@ -2,10 +2,10 @@ import json
 import sys
 from pathlib import Path
 
-from analyse_frames import Verdict, analyse_frames
-from check_video import check_video
-from extract_frames import extract_frames
-from prompt import PROMPT
+from .analyse_frames import Verdict, analyse_frames
+from .check_video import check_video
+from .extract_frames import extract_frames
+from .prompt import PROMPT
 
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
 
