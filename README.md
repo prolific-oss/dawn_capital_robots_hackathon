@@ -5,8 +5,8 @@ A video quality gate for robot demonstration footage. It checks that a video of 
 Each video goes through two stages:
 
 1. **Technical checks** (OpenCV)
-   - `min_fps_30`: at least 30 fps (29.97 is accepted so NTSC footage passes).
-   - `min_resolution_720p`: the shorter side is at least 720 px.
+   - `min_fps_24` / `max_fps_60`: between 24 and 60 fps (23.976 is accepted so NTSC footage passes).
+   - `min_resolution_720p` / `max_resolution_2160p`: the shorter side is between 720 and 2160 px.
    - `min_frames`: enough frames to sample at least two (6 with the default step of 5).
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
@@ -64,8 +64,10 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
   "video": "videos/example1.mov",
   "passed": true,
   "tests": [
-    {"test": "min_fps_30", "passed": true, "value": 30.0},
+    {"test": "min_fps_24", "passed": true, "value": 30.0},
+    {"test": "max_fps_60", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
+    {"test": "max_resolution_2160p", "passed": true, "value": "1920x1080"},
     {"test": "min_frames", "passed": true, "value": 360},
     {"test": "stable_camera", "passed": true, "reason": "..."},
     {"test": "plug_and_socket_visible", "passed": true, "reason": "..."}
