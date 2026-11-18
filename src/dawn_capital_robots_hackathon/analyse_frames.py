@@ -34,8 +34,10 @@ class Verdict(BaseModel):
 
 def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONING_EFFORT):
     content = [{"type": "text", "text": prompt}]
+    payload_bytes = 0
     for frame in frames:
         b64 = base64.b64encode(frame.path.read_bytes()).decode()
+        payload_bytes += len(b64)
         content.append({"type": "text", "text": f"Frame {frame.index} at t={frame.t:.2f}s:"})
         content.append({"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}})
     response = OpenAI(api_key=get_settings().openai_api_key.get_secret_value()).chat.completions.parse(
@@ -50,4 +52,13 @@ def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONIN
     if choice.message.parsed is None:
         # e.g. finish_reason "length" when the output was cut off
         raise ValueError(f"Model returned no verdict (finish_reason={choice.finish_reason})")
-    return choice.message.parsed.model_dump()
+    usage = response.usage
+    llm = {
+        "model": model,
+        "frames": len(frames),
+        "payload_mb": round(payload_bytes / 1e6, 1),
+        "prompt_tokens": usage.prompt_tokens if usage else None,
+        "completion_tokens": usage.completion_tokens if usage else None,
+        "total_tokens": usage.total_tokens if usage else None,
+    }
+    return choice.message.parsed.model_dump(), llm

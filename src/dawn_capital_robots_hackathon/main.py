@@ -26,14 +26,17 @@ def process(video, prompt):
     shutil.rmtree(out_dir / "frames", ignore_errors=True)
 
     tests = check_video(video)
+    llm = None
     if all(t["passed"] for t in tests):
         frames = extract_frames(video, out_dir / "frames")
-        verdict = analyse_frames(frames, prompt)
+        verdict, llm = analyse_frames(frames, prompt)
         tests += [{"test": name, **check} for name, check in verdict.items()]
     else:
         tests += [{"test": name, "passed": False, "reason": "skipped: technical checks failed"} for name in Verdict.model_fields]
 
     report = {"video": str(video), "passed": all(t["passed"] for t in tests), "tests": tests}
+    if llm:
+        report["llm"] = llm
     (out_dir / "report.json").write_text(json.dumps(report, indent=2))
     return report
 
@@ -56,6 +59,7 @@ def main():
         "passed": sum(r["passed"] for r in reports),
         "failed": sum(not r["passed"] and "error" not in r for r in reports),
         "errors": sum("error" in r for r in reports),
+        "total_tokens": sum((r.get("llm") or {}).get("total_tokens") or 0 for r in reports),
     }
     Path("output").mkdir(exist_ok=True)
     (Path("output") / "report.json").write_text(json.dumps({"summary": summary, "videos": reports}, indent=2))

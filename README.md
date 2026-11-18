@@ -64,7 +64,7 @@ For each video, `output/<video-name>-<hash>/` contains (the hash is derived from
 
 Frames and `report.json` from a previous run are deleted when the video is processed again.
 
-A combined `output/report.json` covers every video in the run: a `summary` (total, passed, failed, errors) and a `videos` list holding each video's report (or an `error` message if processing crashed).
+A combined `output/report.json` covers every video in the run: a `summary` (total, passed, failed, errors, total_tokens) and a `videos` list holding each video's report (or an `error` message if processing crashed).
 
 ```json
 {
@@ -83,6 +83,14 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
   ]
 }
 ```
+
+Videos that reach the model also get an `llm` block with the model name, the number of frames sent, the upload size (`payload_mb`) and the token counts the API reported, so you can see what each video costs:
+
+```json
+"llm": {"model": "gpt-6.1-terra", "frames": 53, "payload_mb": 24.9, "prompt_tokens": 61000, "completion_tokens": 900, "total_tokens": 61900}
+```
+
+Videos rejected by the technical checks make no API call and have no `llm` block.
 
 ## Customising
 
