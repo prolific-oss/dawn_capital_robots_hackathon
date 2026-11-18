@@ -4,8 +4,9 @@ from .extract_frames import FRAME_STEP, MIN_FRAMES
 
 # 23.97 allowed so NTSC "24 fps" (23.976) footage passes
 MIN_FPS = 23.97
-# above this (slow-motion modes) the sampled frame count grows with no QA benefit
-MAX_FPS = 60
+# above this (slow-motion modes) the sampled frame count grows with no QA benefit;
+# 60.1 so nominal 60 fps passes, as reported rates drift slightly (e.g. 60.0008)
+MAX_FPS = 60.1
 # bounds the number of frames sent to the model, and with it request size and cost
 MAX_DURATION_S = 30
 # shorter side, so portrait videos are judged the same as landscape
