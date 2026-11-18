@@ -12,7 +12,7 @@ Each video goes through two stages:
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
-   - `privacy_safe`: no frame shows a face, readable personal text, a photo or screen of a person, or a distinctive tattoo, scar or birthmark. Each problem is listed under `issues` with its timestamp. Ordinary hands, arms, clothing and plain jewellery are allowed. The policy is in `prompt.py`; edit it there. Audio is not checked.
+   - `privacy_safe`: no frame shows a face, readable personal text, a photo or screen of a person, or a distinctive tattoo, scar or birthmark. Each problem is listed under `issues` with its timestamp. Ordinary hands, arms, clothing and plain jewellery are allowed, and so is printed text on clothing or products (slogans, brand names) unless it names a person. The policy is in `prompt.py`; edit it there. Audio is not checked.
 
    Every 5th frame is sampled and sent to the model together. The model returns a pass/fail and a short reason for each check.
 
