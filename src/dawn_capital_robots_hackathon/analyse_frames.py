@@ -1,12 +1,10 @@
 import base64
 
-from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel
 
 from .prompt import PROMPT
-
-load_dotenv()
+from .settings import get_settings
 
 MODEL = "gpt-6.1-terra"
 REASONING_EFFORT = "low"
@@ -40,7 +38,7 @@ def analyse_frames(frames, prompt=PROMPT, model=MODEL, reasoning_effort=REASONIN
         b64 = base64.b64encode(frame.path.read_bytes()).decode()
         content.append({"type": "text", "text": f"Frame {frame.index} at t={frame.t:.2f}s:"})
         content.append({"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}})
-    response = OpenAI().chat.completions.parse(
+    response = OpenAI(api_key=get_settings().openai_api_key.get_secret_value()).chat.completions.parse(
         model=model,
         reasoning_effort=reasoning_effort,
         messages=[{"role": "user", "content": content}],

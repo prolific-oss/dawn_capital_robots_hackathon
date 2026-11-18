@@ -29,6 +29,7 @@ All code lives in the `dawn_capital_robots_hackathon` package under `src/`.
 | `extract_frames.py` | Saves every 5th frame as a JPEG. |
 | `analyse_frames.py` | Sends frames to the vision model and parses the structured `Verdict`. |
 | `prompt.py` | The prompt that defines the visual checks. |
+| `settings.py` | Loads the OpenAI API key (pydantic-settings). |
 
 ## Setup
 
@@ -38,6 +39,8 @@ Requires Python 3.13+ and [uv](https://docs.astral.sh/uv/).
 uv sync
 echo "OPENAI_API_KEY=sk-..." > .env
 ```
+
+The key is read from `.env` in the directory you run from. A real `OPENAI_API_KEY` environment variable takes precedence. If neither is set, the run stops with a clear error when the first model call is made.
 
 ## Usage
 

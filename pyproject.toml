@@ -6,7 +6,7 @@ dependencies = [
     "openai>=3.49.0",
     "opencv-python-headless>=5.0.0.93",
     "pydantic>=2",
-    "python-dotenv>=1.2.4",
+    "pydantic-settings>=2.16.3",
 ]
 
 [project.scripts]
