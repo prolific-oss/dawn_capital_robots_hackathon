@@ -5,7 +5,7 @@ A video quality gate for robot demonstration footage. It checks that a video of 
 Each video goes through two stages:
 
 1. **Technical checks** (OpenCV)
-   - `min_fps_24` / `max_fps_60`: between 24 and 60 fps (23.976 is accepted so NTSC footage passes).
+   - `min_fps_30` / `max_fps_60`: between 30 and 60 fps. The minimum is nominal, so 29.0 passes ("30 fps" phone footage often reports 29.3–30.1); 60.1 is the matching tolerance on the maximum.
    - `min_resolution_720p` / `max_resolution_2160p`: the shorter side is between 720 and 2160 px.
    - `max_duration_30s`: at most 30 seconds, which bounds the number of frames sent to the model.
    - `min_frames`: enough frames to sample at least two (6 with the default step of 5).
@@ -71,7 +71,7 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
   "video": "videos/example1.mov",
   "passed": true,
   "tests": [
-    {"test": "min_fps_24", "passed": true, "value": 30.0},
+    {"test": "min_fps_30", "passed": true, "value": 30.0},
     {"test": "max_fps_60", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
     {"test": "max_resolution_2160p", "passed": true, "value": "1920x1080"},

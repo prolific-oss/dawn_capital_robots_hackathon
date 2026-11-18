@@ -2,8 +2,8 @@ import cv2
 
 from .extract_frames import FRAME_STEP, MIN_FRAMES
 
-# 23.97 allowed so NTSC "24 fps" (23.976) footage passes
-MIN_FPS = 23.97
+# nominal 30 fps; 29 because "30 fps" phone footage reports 29.3-30.1 on average (variable frame rate, NTSC)
+MIN_FPS = 29.0
 # above this (slow-motion modes) the sampled frame count grows with no QA benefit;
 # 60.1 so nominal 60 fps passes, as reported rates drift slightly (e.g. 60.0008)
 MAX_FPS = 60.1
@@ -27,7 +27,7 @@ def check_video(path):
     short_side = min(width, height)
     duration = frame_count / fps if fps > 0 else 0
     return [
-        {"test": "min_fps_24", "passed": fps >= MIN_FPS, "value": round(fps, 2)},
+        {"test": "min_fps_30", "passed": fps >= MIN_FPS, "value": round(fps, 2)},
         {"test": "max_fps_60", "passed": fps <= MAX_FPS, "value": round(fps, 2)},
         {"test": "min_resolution_720p", "passed": short_side >= MIN_SHORT_SIDE, "value": f"{width}x{height}"},
         {"test": "max_resolution_2160p", "passed": short_side <= MAX_SHORT_SIDE, "value": f"{width}x{height}"},
