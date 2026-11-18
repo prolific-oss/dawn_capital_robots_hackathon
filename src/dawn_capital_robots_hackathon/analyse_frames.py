@@ -11,22 +11,37 @@ REASONING_EFFORT = "low"
 
 
 class Check(BaseModel):
+    """One check's verdict: a short reason first, then passed (true or false, not a score or threshold)."""
+
     reason: str
     passed: bool
 
 
 class PrivacyIssue(BaseModel):
+    """One identifying detail found in a frame.
+
+    t is the time in seconds from the start of the video, copied from the label of the frame
+    it appears in (not a score or threshold). description says what was seen.
+    """
+
     t: float
     description: str
 
 
 class PrivacyCheck(BaseModel):
+    """The privacy verdict: a reason, every issue found, then passed.
+
+    passed is false whenever an issue is listed.
+    """
+
     reason: str
     issues: list[PrivacyIssue]
     passed: bool
 
 
 class Verdict(BaseModel):
+    """The model's structured answer: one verdict per check, in the order the prompt defines them."""
+
     stable_camera: Check
     plug_and_socket_visible: Check
     privacy_safe: PrivacyCheck
