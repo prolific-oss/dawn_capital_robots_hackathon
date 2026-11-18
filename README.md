@@ -8,7 +8,7 @@ Each video goes through two stages:
    - `min_fps_30` / `max_fps_60`: between 30 and 60 fps. The minimum is nominal, so 29.0 passes ("30 fps" phone footage often reports 29.3–30.1); 60.1 is the matching tolerance on the maximum.
    - `min_resolution_720p` / `max_resolution_2160p`: the shorter side is between 720 and 2160 px.
    - `max_duration_30s`: at most 30 seconds, which bounds the number of frames sent to the model.
-   - `min_frames`: enough frames to sample at least two (6 with the default step of 5).
+   - `min_duration_4s`: at least 4 seconds, the shortest clip in the sample data with a complete plug-in.
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
@@ -75,8 +75,8 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
     {"test": "max_fps_60", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
     {"test": "max_resolution_2160p", "passed": true, "value": "1920x1080"},
+    {"test": "min_duration_4s", "passed": true, "value": "12.0s"},
     {"test": "max_duration_30s", "passed": true, "value": "12.0s"},
-    {"test": "min_frames", "passed": true, "value": 360},
     {"test": "stable_camera", "passed": true, "reason": "..."},
     {"test": "plug_and_socket_visible", "passed": true, "reason": "..."},
     {"test": "privacy_safe", "passed": true, "reason": "...", "issues": []}
