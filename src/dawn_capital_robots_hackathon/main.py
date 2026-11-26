@@ -2,6 +2,7 @@ import hashlib
 import json
 import shutil
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .analyse_frames import Verdict, analyse_frames
@@ -10,6 +11,8 @@ from .extract_frames import extract_frames
 from .prompt import PROMPT
 
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
+# how many videos are processed, and sent to the model, at once (1 = one at a time)
+PARALLEL_VIDEOS = 5
 
 
 def output_dir(video):
@@ -41,18 +44,22 @@ def process(video, prompt):
     return report
 
 
+def run(video):
+    try:
+        report = process(video, PROMPT)
+        print(f"{'PASS' if report['passed'] else 'FAIL'}  {video}")
+    except Exception as e:
+        report = {"video": str(video), "passed": False, "error": str(e)}
+        print(f"ERROR {video}: {e}")
+    return report
+
+
 def main():
     target = Path(sys.argv[1] if len(sys.argv) > 1 else "videos")
     videos = [target] if target.is_file() else sorted(p for p in target.iterdir() if p.suffix.lower() in VIDEO_EXTS)
-    reports = []
-    for video in videos:
-        try:
-            report = process(video, PROMPT)
-            print(f"{'PASS' if report['passed'] else 'FAIL'}  {video}")
-        except Exception as e:
-            report = {"video": str(video), "passed": False, "error": str(e)}
-            print(f"ERROR {video}: {e}")
-        reports.append(report)
+    # console lines appear as videos finish; map keeps reports in input order
+    with ThreadPoolExecutor(PARALLEL_VIDEOS) as pool:
+        reports = list(pool.map(run, videos))
 
     summary = {
         "total": len(reports),

@@ -95,6 +95,7 @@ Videos rejected by the technical checks make no API call and have no `llm` block
 ## Customising
 
 - **Model and reasoning effort**: set `MODEL` and `REASONING_EFFORT` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
+- **Parallelism**: set `PARALLEL_VIDEOS` in `src/dawn_capital_robots_hackathon/main.py` (default 5) to process that many videos, and make that many model calls, at once. Use 1 to process them one at a time. Lower it if you hit rate limits (429). Console lines appear in the order videos finish; `output/report.json` keeps input order.
 - **Prompt or criteria**: edit `src/dawn_capital_robots_hackathon/prompt.py`. If you add a check, add a matching field to `Verdict` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
 - **Sampling rate**: change `FRAME_STEP` (keep every Nth frame) in `src/dawn_capital_robots_hackathon/extract_frames.py`.
 - **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
