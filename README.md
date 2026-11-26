@@ -8,11 +8,11 @@ Each video goes through two stages:
    - `min_fps_30` / `max_fps_60`: between 30 and 60 fps. The minimum is nominal, so 29.0 passes ("30 fps" phone footage often reports 29.3–30.1); 60.1 is the matching tolerance on the maximum.
    - `min_resolution_720p` / `max_resolution_2160p`: the shorter side is between 720 and 2160 px.
    - `max_duration_30s`: at most 30 seconds, which bounds the number of frames sent to the model.
-   - `min_frames`: enough frames to sample at least two (6 with the default step of 5).
+   - `min_duration_4s`: at least 4 seconds, the shortest clip in the sample data with a complete plug-in.
 2. **Visual checks** (OpenAI vision model). These run only if the technical checks pass.
    - `stable_camera`: the camera doesn't shake, pan, tilt or zoom.
    - `plug_and_socket_visible`: the plug and socket are in frame, in focus, well lit and not blocked.
-   - `privacy_safe`: no frame shows a face, readable personal text, a photo or screen of a person, or a distinctive tattoo, scar or birthmark. Each problem is listed under `issues` with its timestamp. Ordinary hands, arms, clothing and plain jewellery are allowed. The policy is in `prompt.py`; edit it there. Audio is not checked.
+   - `privacy_safe`: no frame shows a face, readable personal text, a photo or screen of a person, or a distinctive tattoo, scar or birthmark. Each problem is listed under `issues` with its timestamp. Ordinary hands, arms, clothing and plain jewellery are allowed, and so is printed text on clothing or products (slogans, brand names) unless it names a person. The policy is in `prompt.py`; edit it there. Audio is not checked.
 
    Every 5th frame is sampled and sent to the model together. The model returns a pass/fail and a short reason for each check.
 
@@ -37,7 +37,7 @@ Requires Python 3.13+ and [uv](https://docs.astral.sh/uv/).
 
 ```sh
 uv sync
-echo "OPENAI_API_KEY=sk-..." > .env
+cp .env.example .env   # then put your OpenAI API key in .env
 ```
 
 The key is read from `.env` in the directory you run from. A real `OPENAI_API_KEY` environment variable takes precedence. If neither is set, the run stops with a clear error when the first model call is made.
@@ -75,8 +75,8 @@ A combined `output/report.json` covers every video in the run: a `summary` (tota
     {"test": "max_fps_60", "passed": true, "value": 30.0},
     {"test": "min_resolution_720p", "passed": true, "value": "1920x1080"},
     {"test": "max_resolution_2160p", "passed": true, "value": "1920x1080"},
+    {"test": "min_duration_4s", "passed": true, "value": "12.0s"},
     {"test": "max_duration_30s", "passed": true, "value": "12.0s"},
-    {"test": "min_frames", "passed": true, "value": 360},
     {"test": "stable_camera", "passed": true, "reason": "..."},
     {"test": "plug_and_socket_visible", "passed": true, "reason": "..."},
     {"test": "privacy_safe", "passed": true, "reason": "...", "issues": []}
@@ -100,3 +100,7 @@ Videos rejected by the technical checks make no API call and have no `llm` block
 - **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
 
 `videos/`, `output/` and `.env` are git-ignored.
+
+## License
+
+[MIT](LICENSE)

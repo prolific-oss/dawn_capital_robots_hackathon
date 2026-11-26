@@ -14,9 +14,10 @@ in enough frames to follow the plug going into the socket.
 
 3. privacy_safe: No frame shows information that could identify a person. \
 Fail if ANY frame shows a face or any recognisable part of one (including partial, profile or reflected faces), \
-readable personal text (names, addresses, documents, mail, labels, screens), \
+readable personal text (names, addresses, documents, mail, name tags, screens), \
 a photo or screen showing a person, or a distinctive tattoo, scar or birthmark that is clearly visible. \
-Ordinary hands, arms, clothing and plain jewellery are fine. One frame is enough to fail. \
+Ordinary hands, arms, clothing and plain jewellery are fine, and so is printed text on clothing or products \
+(slogans, brand names) unless it names a person. One frame is enough to fail. \
 List every issue with the t value from that frame's label and a short description; \
 leave the list empty when nothing is found.
 
