@@ -37,7 +37,7 @@ Requires Python 3.13+ and [uv](https://docs.astral.sh/uv/).
 
 ```sh
 uv sync
-echo "OPENAI_API_KEY=sk-..." > .env
+cp .env.example .env   # then put your OpenAI API key in .env
 ```
 
 The key is read from `.env` in the directory you run from. A real `OPENAI_API_KEY` environment variable takes precedence. If neither is set, the run stops with a clear error when the first model call is made.
@@ -100,3 +100,7 @@ Videos rejected by the technical checks make no API call and have no `llm` block
 - **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
 
 `videos/`, `output/` and `.env` are git-ignored.
+
+## License
+
+[MIT](LICENSE)
