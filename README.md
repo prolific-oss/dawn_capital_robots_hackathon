@@ -64,6 +64,8 @@ For each video, `output/<video-name>-<hash>/` contains (the hash is derived from
 
 Frames and `report.json` from a previous run are deleted when the video is processed again.
 
+If a `responses.jsonl` sits in the same folder as the videos, each video's report starts with its `submission_id`, `participant_id` and `collection_id`, matched by video filename against the `files[].path` entries. Videos with no match get `null` for all three.
+
 A combined `output/report.json` covers every video in the run: a `summary` (total, passed, failed, errors, total_tokens) and a `videos` list holding each video's report (or an `error` message if processing crashed).
 
 ```json
