@@ -25,7 +25,7 @@ All code lives in the `dawn_capital_robots_hackathon` package under `src/`.
 | File | Purpose |
 |---|---|
 | `main.py` | CLI entry point. Runs the pipeline and writes the reports. |
-| `check_video.py` | FPS and resolution checks. |
+| `check_video.py` | FPS, resolution and duration checks. |
 | `extract_frames.py` | Saves every 5th frame as a JPEG. |
 | `analyse_frames.py` | Sends frames to the vision model and parses the structured `Verdict`. |
 | `prompt.py` | The prompt that defines the visual checks. |
@@ -40,7 +40,7 @@ uv sync
 cp .env.example .env   # then put your OpenAI API key in .env
 ```
 
-The key is read from `.env` in the directory you run from. A real `OPENAI_API_KEY` environment variable takes precedence. If neither is set, the run stops with a clear error when the first model call is made.
+The key is read from `.env` in the directory you run from. A real `OPENAI_API_KEY` environment variable takes precedence. If neither is set, each video that passes the technical checks is reported as `ERROR` ("OPENAI_API_KEY is not set") when its model call is made; videos that fail the technical checks are unaffected.
 
 ## Usage
 
@@ -92,7 +92,7 @@ Videos that reach the model also get an `llm` block with the model name, the num
 "llm": {"model": "gpt-6.1-terra", "frames": 53, "payload_mb": 24.9, "prompt_tokens": 61000, "completion_tokens": 900, "total_tokens": 61900}
 ```
 
-Videos rejected by the technical checks make no API call and have no `llm` block.
+Videos rejected by the technical checks make no API call and have no `llm` block. Their visual checks are reported as failed with the reason `skipped: technical checks failed` (and no `issues` list). A video that can't be opened is reported as `ERROR`.
 
 ## Customising
 
@@ -100,7 +100,7 @@ Videos rejected by the technical checks make no API call and have no `llm` block
 - **Parallelism**: set `PARALLEL_VIDEOS` in `src/dawn_capital_robots_hackathon/main.py` (default 5) to process that many videos, and make that many model calls, at once. Use 1 to process them one at a time. Lower it if you hit rate limits (429). Console lines appear in the order videos finish; `output/report.json` keeps input order.
 - **Prompt or criteria**: edit `src/dawn_capital_robots_hackathon/prompt.py`. If you add a check, add a matching field to `Verdict` in `src/dawn_capital_robots_hackathon/analyse_frames.py`.
 - **Sampling rate**: change `FRAME_STEP` (keep every Nth frame) in `src/dawn_capital_robots_hackathon/extract_frames.py`.
-- **Thresholds**: change the FPS and resolution limits in `src/dawn_capital_robots_hackathon/check_video.py`.
+- **Thresholds**: change the FPS, resolution and duration limits in `src/dawn_capital_robots_hackathon/check_video.py`.
 
 `videos/`, `output/` and `.env` are git-ignored.
 
